@@ -1,10 +1,14 @@
+from urllib import error
 import requests
 import urllib
 import time
-import json
 
 
-BVList=['BV1CA411q7ZB', 'BV1of4y1S7Zo', 'BV1nZ4y1K75U', 'BV1gb4y12733', 'BV1N34y1D7QP', 'BV1g34y1d7tf', 'BV17R4y1J7VG', 'BV1QJ41187x8', 'BV1C4411V7yw', 'BV1y4411V7gF', 'BV1Bt4y1r7P6', 'BV12b411v71w', 'BV1fs411y7gT', 'BV1Xt411Z7vo', 'BV1Ma4y1a7XV', 'BV19i4y1A72A', 'BV1pf4y1e7xW', 'BV11K411c7z3', 'BV1JX4y1G7v4', 'BV1F64y1z7q3', 'BV1PA41187qk', 'BV14b411b7xY', 'BV1Gt41137cC', 'BV1tt411U7E8', 'BV1i4411i7km', 'BV1u54y1q777', 'BV1gW411m7Vg', 'BV1R441197Ze', 'BV1GW41127S8', 'BV1MK4y1P7MC', 'BV1nW411U7Qi', 'BV1Dt4y1U7du', 'BV12V411i7Be', 'BV13p411R7Fc', 'BV1tb411A7G9', 'BV1os411f7Hk', 'BV1CJ411D7dC', 'BV1Rt411q7SA', 'BV1oK4y1h7LX', 'BV1HW411X76Y', 'BV1pb411B7GZ', 'BV1Px411E7Fh', 'BV1nX4y1V7Kn', 'BV1EJ411G7bS', 'BV1zJ411J7Ux', 'BV1ep4y197qK', 'BV1n4411q7cf', 'BV1Ws411n7r4', 'BV1gx411m7GA', 'BV1EK411p7YS', 'BV1j7411N7VF', 'BV19v411q7QT', 'BV1UE411e7MP', 'BV1Mt411k7Tz']
+BVList=[
+    'BV1dA411L7Kj','BV1aK4y1a7sd','BV1wf4y1k7as',
+    'BV1CK4y1W7Cc','BV12X4y1K7Ys','BV1Fz4y167Ru',
+    'BV17y4y167xu','BV1wD4y1X7fP','BV1wV41117GP'
+]
 
 def getData(url):
     resp = requests.get(url)
@@ -77,7 +81,10 @@ def getAudio(infoList):
             title = " ".join(title.split("/"))
         if '\\' in title:
             title = " ".join(title.split("\\")) 
-        urllib.request.urlretrieve(url=audioUrl, filename='download/'+title+'.mp3')
+        try:
+            urllib.request.urlretrieve(url=audioUrl, filename='download/'+title+'.mp3')
+        except (HTTPError, URLError, ContentTooShortError) as e:
+            print("下载失败，因为：", e)
         ed=time.time()
         print(str(round(ed-st,2))+' seconds download finish:',title)
         time.sleep(1)
