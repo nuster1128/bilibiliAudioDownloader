@@ -73,6 +73,10 @@ def getAudio(infoList):
             ('Connection', 'keep-alive'),
         ]
         urllib.request.install_opener(opener)
+        if "/" in title:
+            title = " ".join(title.split("/"))
+        if '\\' in title:
+            title = " ".join(title.split("\\")) 
         urllib.request.urlretrieve(url=audioUrl, filename='download/'+title+'.mp3')
         ed=time.time()
         print(str(round(ed-st,2))+' seconds download finish:',title)
