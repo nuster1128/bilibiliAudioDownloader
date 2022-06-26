@@ -1,12 +1,7 @@
 import requests
 import urllib
 import time
-
-BVList=[
-    'BV1dA411L7Kj','BV1aK4y1a7sd','BV1wf4y1k7as',
-    'BV1CK4y1W7Cc','BV12X4y1K7Ys','BV1Fz4y167Ru',
-    'BV17y4y167xu','BV1wD4y1X7fP','BV1wV41117GP'
-]
+import sys
 
 def getCidAndTitle(bvid,p=1):
     url='https://api.bilibili.com/x/web-interface/view?bvid='+bvid
@@ -59,7 +54,8 @@ def getAudio(infoList):
         time.sleep(1)
 
 if __name__ == '__main__':
-    print('Downloader Start!')
+    BVList = sys.argv[1:]
+    print(f'Downloader Start! {BVList}')
     st=time.time()
     getAudio(getInformation(BVList))
     ed=time.time()
