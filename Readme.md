@@ -1,8 +1,6 @@
 # BilibiliAudioDownloader
 
-## 最后更新时间
-
-Version 1.0	2021.2.22
+Version 1.1
 
 ## 项目目的
 
@@ -36,7 +34,7 @@ requests, urllib, time
 
 请尊重原视频的作者的版权，禁止用于任何商业用途！
 
-本项目参考了https://github.com/Henryhaohao/Bilibili_video_download和https://github.com/SocialSisterYi/bilibili-API-collect中部分内容，感谢两位作者。
+本项目参考了 https://github.com/Henryhaohao/Bilibili_video_download 和 https://github.com/SocialSisterYi/bilibili-API-collect 中部分内容，感谢两位作者。
 
 本项目作者联系方式:997577114@qq.com
 
