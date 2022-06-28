@@ -1,8 +1,6 @@
 # BilibiliAudioDownloader
 
-## 最后更新时间
-
-Version 1.0	2021.2.22
+Version 1.1
 
 ## 项目目的
 
@@ -20,7 +18,7 @@ Version 1.0	2021.2.22
 
 1.下载代码并安装相应依赖库。
 
-2.在main.py的BVList中填上想要下载的BV号列表。
+2.运行 python main.py BV1AL4y1L7cg BV1dZ4y1q7F2 ...（多个bv号以空格分割）
 
 备注：如果不是多P的视频，只需要BV号即可，如['BV1aK4y1a7sd',...]；如果是视频中的某一P，需要在BV号后用'-'注明是第几P，如['BV1aK4y1a7sd-1']。
 
@@ -36,7 +34,7 @@ requests, urllib, time
 
 请尊重原视频的作者的版权，禁止用于任何商业用途！
 
-本项目参考了https://github.com/Henryhaohao/Bilibili_video_download和https://github.com/SocialSisterYi/bilibili-API-collect中部分内容，感谢两位作者。
+本项目参考了 https://github.com/Henryhaohao/Bilibili_video_download 和 https://github.com/SocialSisterYi/bilibili-API-collect 中部分内容，感谢两位作者。
 
 本项目作者联系方式:997577114@qq.com
 
