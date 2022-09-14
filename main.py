@@ -113,7 +113,6 @@ def getAudio(infoList):
 if __name__ == '__main__':
     BVList = sys.argv[1:]
     print(BVList)
-    BVList = ["BV1GU4y1z7b7","BV1xW411b7KM"]
     
     print(f'Downloader Start! {BVList}')
     st=time.time()
