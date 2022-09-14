@@ -3,6 +3,7 @@ import requests
 import urllib
 import time
 import sys
+import os
 
 
 def getData(url):
@@ -16,48 +17,72 @@ def getData(url):
         return False
     return resp.json()['data']
 
-def getCidAndTitle(bvid,p=1):
+def getCidAndTitle(bvid):
     url='https://api.bilibili.com/x/web-interface/view?bvid='+bvid
     data = getData(url)
     if data != False:
-        title=data['title']
-        cid=data['pages'][p-1]['cid']
-        return str(cid),title
+        p_len = len(data['pages'])
+        cids = []
+        titles = []
+        for p in range(p_len):
+            # title=data['title']+str(p)
+            cids.append(str(data['pages'][p]['cid']))
+            titles.append(data['pages'][p]["part"])
+        return cids,titles,data["title"]
     else:
         return False,False
 
 def getInformation(bvList):
     infoList=[]
     for bvid in bvList:
-        item=[]
         if len(bvid) < 12:
             print("BVID 格式错误")
             continue
         elif len(bvid) == 12:
-            cid,title=getCidAndTitle(bvid)
-            if(cid == False):
+            cids,titles,folder=getCidAndTitle(bvid)
+            if(cids == False):
                 continue
-            item.append(bvid)
+            for i in range(len(cids)):
+                item=[]
+                item.append(bvid)
+                item.append(cids[i])
+                item.append(titles[i])
+                item.append(folder)
+                infoList.append(item)
+
         else:
-            cid,title=getCidAndTitle(bvid[:12],int(bvid[13:]))
-            if(cid == False):
+            cids,titles,folder=getCidAndTitle(bvid[:12],int(bvid[13:]))
+            if(cids == False):
                 continue
-            item.append(bvid[:12])
-        item.append(cid)
-        item.append(title)
-        infoList.append(item)
+            for i in range(len(cids)):
+                item=[]
+                item.append(bvid)
+                item.append(cids[i])
+                item.append(titles[i])
+                item.append(folder)
+                infoList.append(item)
+            
+
+        
 
     return infoList
 
 def getAudio(infoList):
     baseUrl='http://api.bilibili.com/x/player/playurl?fnval=16&'
 
+    pre_folder = "";
     for item in infoList:
         st=time.time()
         bvid,cid,title=item[0],item[1],item[2]
         url=baseUrl+'bvid='+bvid+'&cid='+cid
-
-        
+        folder = "./download/"+item[3]
+        if(not os.path.exists(folder)):
+            
+            os.makedirs(folder)
+            pre_folder = folder
+        if(os.path.exists(folder) and folder != pre_folder):
+            print(f"与文件夹:./download/{folder}冲突，已经自动跳过该音频或音频合集({bvid})的下载请重命名冲突文件夹的名字")
+            continue
         audioUrl=requests.get(url).json()['data']['dash']['audio'][0]['baseUrl']
 
         opener = urllib.request.build_opener()
@@ -77,7 +102,8 @@ def getAudio(infoList):
         if '\\' in title:
             title = " ".join(title.split("\\")) 
         try:
-            urllib.request.urlretrieve(url=audioUrl, filename='download/'+title+'.mp3')
+
+            urllib.request.urlretrieve(url=audioUrl, filename=folder+'/'+title+'.mp3')
         except (HTTPError, URLError, ContentTooShortError) as e:
             print("下载失败，因为：", e)
         ed=time.time()
@@ -86,6 +112,8 @@ def getAudio(infoList):
 
 if __name__ == '__main__':
     BVList = sys.argv[1:]
+    print(BVList)
+    
     print(f'Downloader Start! {BVList}')
     st=time.time()
     getAudio(getInformation(BVList))
