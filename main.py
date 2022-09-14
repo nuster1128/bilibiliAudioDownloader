@@ -17,7 +17,7 @@ def getData(url):
         return False
     return resp.json()['data']
 
-def getCidAndTitle(bvid,p=1):
+def getCidAndTitle(bvid):
     url='https://api.bilibili.com/x/web-interface/view?bvid='+bvid
     data = getData(url)
     if data != False:
@@ -52,7 +52,7 @@ def getInformation(bvList):
 
         else:
             cids,titles,folder=getCidAndTitle(bvid[:12],int(bvid[13:]))
-            if(cid == False):
+            if(cids == False):
                 continue
             for i in range(len(cids)):
                 item=[]
