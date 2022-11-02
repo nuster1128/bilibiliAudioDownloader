@@ -1,2 +1,4 @@
 download/*
 !*.gitkeep
+.idea
+exe_application
