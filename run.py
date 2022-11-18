@@ -89,21 +89,25 @@ def getAudio(infoList):
         ]
         urllib.request.install_opener(opener)
         if "/" in title:
-            title = " ".join(title.split("/"))
+            title = "-".join(title.split("/"))
         if '\\' in title:
             title = " ".join(title.split("\\"))
         if (part == title):
             print('Downloading ' + str(page) + '.' + title + '.mp3')
             try:
                 urllib.request.urlretrieve(url=audioUrl, filename='download/' + str(page) + '.' + title + '.mp3')
-            except (HTTPError, URLError, ContentTooShortError) as e:
+            except (error.HTTPError, error.URLError, error.ContentTooShortError) as e:
                 print("下载失败，因为：", e)
         else:
             print('Downloading: ' + title + ' ' + str(page) + '.' + part + '.mp3')
             try:
                 os.makedirs('./download/' + title, exist_ok=True)
+                if "/" in part:
+                    part = "-".join(part.split("/"))
+                if '\\' in part:
+                    part = " ".join(part.split("\\"))
                 urllib.request.urlretrieve(url=audioUrl, filename='download/' + title + '/' + str(page) + '.' + part + '.mp3')
-            except (HTTPError, URLError, ContentTooShortError) as e:
+            except (error.HTTPError, error.URLError, error.ContentTooShortError) as e:
                 print("下载失败，因为：", e)
         ed = time.time()
         if (part == title):
