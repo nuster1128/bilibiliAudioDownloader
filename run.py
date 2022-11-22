@@ -13,6 +13,27 @@ import csv
 import os
 
 
+def fixStr(str):
+    if "/" in str:
+        str = "-".join(str.split("/"))
+    if '\\' in str:
+        str = " ".join(str.split("\\"))
+    if '?' in str:
+        str = "？".join(str.split("?"))
+    if ':' in str:
+        str = "：".join(str.split(":"))
+    if '*' in str:
+        str = " ".join(str.split("*"))
+    if '"' in str:
+        str = "“".join(str.split("\""))
+    if '<' in str:
+        str = " ".join(str.split("<"))
+    if '>' in str:
+        str = " ".join(str.split(">"))
+    if '|' in str:
+        str = " ".join(str.split("|"))
+    return str
+
 def getData(url):
     resp = requests.get(url)
     if resp.status_code >= 300:
@@ -31,9 +52,9 @@ def getCidAndTitle(bvid, p=1):
     if data != False:
         title = data['title']
         cid = data['pages'][p-1]['cid']
-        part = data['pages'][p-1]['part']
+        str = data['pages'][p-1]['str']
         page = p
-        return str(cid), title, part, page
+        return str(cid), title, str, page
     else:
         return False, False
 
@@ -72,8 +93,7 @@ def getAudio(infoList):
         bvid, cid, title, part, page = item[0], item[1], item[2], item[3], item[4]
         url = baseUrl+'bvid='+bvid+'&cid='+cid
 
-        audioUrl = requests.get(url).json(
-        )['data']['dash']['audio'][0]['baseUrl']
+        audioUrl = requests.get(url).json()['data']['dash']['audio'][0]['baseUrl']
 
         opener = urllib.request.build_opener()
         opener.addheaders = [
@@ -88,52 +108,19 @@ def getAudio(infoList):
             ('Connection', 'keep-alive'),
         ]
         urllib.request.install_opener(opener)
-        if "/" in title:
-            title = "-".join(title.split("/"))
-        if '\\' in title:
-            title = " ".join(title.split("\\"))
-        if '?' in title:
-            title = "？".join(title.split("?"))
-        if ':' in title:
-            title = "：".join(title.split(":"))
-        if '*' in title:
-            title = " ".join(title.split("*"))
-        if '"' in title:
-            title = "“".join(title.split("\""))
-        if '<' in title:
-            title = " ".join(title.split("<"))
-        if '>' in title:
-            title = " ".join(title.split(">"))
-        if '|' in title:
-            title = " ".join(title.split("|"))
         if (part == title):
+            titlt = fixStr(title)
             print('Downloading ' + str(page) + '.' + title + '.mp3')
             try:
                 urllib.request.urlretrieve(url=audioUrl, filename='download/' + str(page) + '.' + title + '.mp3')
             except (error.HTTPError, error.URLError, error.ContentTooShortError) as e:
                 print("下载失败，因为：", e)
         else:
+            titlt = fixStr(titlt)
+            part = fixStr(part)
             print('Downloading: ' + title + ' ' + str(page) + '.' + part + '.mp3')
             try:
                 os.makedirs('./download/' + title, exist_ok=True)
-                if "/" in part:
-                    part = "-".join(part.split("/"))
-                if '\\' in part:
-                    part = " ".join(part.split("\\"))
-                if '?' in part:
-                    part = "？".join(part.split("?"))
-                if ':' in part:
-                    part = "：".join(part.split(":"))
-                if '*' in part:
-                    part = " ".join(part.split("*"))
-                if '"' in part:
-                    part = "“".join(part.split("\""))
-                if '<' in part:
-                    part = " ".join(part.split("<"))
-                if '>' in part:
-                    part = " ".join(part.split(">"))
-                if '|' in part:
-                    part = " ".join(part.split("|"))
                 urllib.request.urlretrieve(url=audioUrl, filename='download/' + title + '/' + str(page) + '.' + part + '.mp3')
             except (error.HTTPError, error.URLError, error.ContentTooShortError) as e:
                 print("下载失败，因为：", e)
