@@ -1,54 +1,57 @@
 # BilibiliAudioDownloader
 
-**[Version 2.0]**
+原作者现在停止更新，但是由于B站的更新，原作者的代码已经无法使用了，所以我fork了一份，进行了优化更新。
 
-本项目已于2022年11月2日优化更新至2.0版本。
+**[Version 3.0]**
 
-优化更新特性：
+本项目已于2024年2月1日优化更新至3.0版本。
 
-- 更新了Python环境和依赖包的版本，并优化了代码。
-- 更新了使用方法，支持文件批量下载、命令行下载。
-- 新增了应用程序的使用方法，可直接使用exe文件直接进行下载，不必配置Python环境。
+更新：
 
-p.s. 感谢各位提PR和共同维护的朋友们！
+- 提供了无损音频下载
+- 提供简介的下载
+- 支持从收藏夹获取BV号下载
+- 增加转码模块，B站直接下载的MP3文件编码格式不被Apple Music支持，需要额外转码
+- 更新了依赖包的版本，并优化了代码结构
+- 删除了exe文件，并不再提供exe打包支持
+
+P.S. 感谢各位提PR和共同维护的朋友们！
 
 ## 项目目的
 
-一直超爱钢琴曲和小提琴曲，而且喜欢流行音乐的钢琴曲和小提琴曲。
+很喜欢 Vocaloid，但是大多数中P首发都在B站（原MikuFans），自然而然地，B站收藏夹成了歌单
 
-最近在B站发现了好多好棒的UP主发弹奏视频，但是B站视频的播放列表太麻烦，而且貌似不能挑自己喜欢的组成歌单。
-
-想在网易云听但是又没有hhhhh，所以某日张小白反手写了个spider脚本来下载B站视频中的音频，然后建列表导入来听，妙哇。
+但是每次想听歌的时候都要打开B站，实在太麻烦了，而且B站缓存也不好用，所以开始维护这个爬虫项目
 
 ## 主要功能
 
-输入视频BV号列表，批量下载B站视频中的音频到本地。
+输入视频BV号列表或收藏夹ID，批量下载B站视频中的音频到本地。
 
 ## 使用方法
 
-### 方式1 文件批量下载
-
-1. 下载本代码并安装相应的依赖库。
+下载本代码并安装相应的依赖库。
 
 ```shell
-git clone git@github.com:nuster1128/bilibiliAudioDownloader.git
+git clone https://github.com/love98ooo/bilibiliAudioDownloader.git
 cd bilibiliAudioDownloader
 pip install -r requirements.txt
 ```
 
-2. 新建一个txt文件或csv文件存放要下载的bv号，如input.txt或input.csv。每行输入一个bv号，如
+### 下载音乐
+
+#### 方式1 文件批量下载
+
+新建一个txt文件或csv文件存放要下载的bv号，如 `input.txt` 或 `input.csv`。每行输入一个bv号，如
 
 ```
 BV1AL4y1L7cg
 BV1dZ4y1q7F2
 ```
 
-可参考代码包里给出的一个input.txt的示例。
-
-3. 运行程序，其中`filename`为刚才创建的文件名。
+运行程序，其中 `filename` 为刚才创建的文件名。
 
 ```shell
-python run.py -f filename
+python run.py -f <filename>
 ```
 
 比如文件名为，如input.txt，则为
@@ -57,61 +60,57 @@ python run.py -f filename
 python run.py -f input.txt
 ```
 
-4. 最终音频文件将下载到`download`文件夹中。
+最终音频文件将下载到 `download` 文件夹中。
 
-备注：如果不是多P的视频，只需要BV号即可，如`BV1aK4y1a7sd`；如果是视频中的某一P，需要在BV号后用'-'注明是第几P，`BV1aK4y1a7sd-1`。
+#### 方式2 命令行批量下载
 
-### 方式2 命令行批量下载
-
-1. 下载本代码并安装相应的依赖库。
+运行程序，其中 `BV1 BV2 ...` 为需要下载的BV号。
 
 ```shell
-git clone git@github.com:nuster1128/bilibiliAudioDownloader.git
-cd bilibiliAudioDownloader
-pip install -r requirements.txt
+python run.py -c <BV1> <BV2> ...
 ```
 
-2. 运行程序，其中`BV1 BV2 ...`为需要下载的BV号。
-
-```shell
-python run.py -c BV1 BV2 ...
-```
-
-比如要下载BV1AL4y1L7cg和BV1dZ4y1q7F2两个音频，则为
+比如要下载 `BV1AL4y1L7cg` 和 `BV1dZ4y1q7F2` 两个音频，则为
 
 ```shell
 python run.py -c BV1AL4y1L7cg BV1dZ4y1q7F2
 ```
 
-3. 最终音频文件将下载到`download`文件夹中。
+#### 方式3 从收藏夹下载
 
-备注：如果不是多P的视频，只需要BV号即可，如`BV1aK4y1a7sd`；如果是视频中的某一P，需要在BV号后用'-'注明是第几P，`BV1aK4y1a7sd-1`。
+运行以下命令获取收藏夹的BV号，其中 `fav_id` 为收藏夹的id，默认输出文件名为 `bvids.txt`
 
-### 方式3 直接通过exe批量下载
-
-1. 双击run.exe。
-2. 修改`input.txt`中的内容，每行为一个BV号。
-
-然后输入以下命令开始下载
-
-```
--f input.txt
+```shell
+python fav_list.py -f <fav_id>
 ```
 
-3. 最终音频文件将下载到`download`文件夹中。
+运行以下命令下载收藏夹中的音频
 
-## Python版本与依赖库
+```shell
+python run.py -f bvids.txt
+```
 
+#### 注意事项
+
+保存目录：最终音频文件将保存到 `./download` 目录下
+
+分P视频：如果不是分P的视频，只需要BV号即可，如 `BV1aK4y1a7sd`；如果是视频中的某一P，需要在BV号后用'-'注明是第几P， 如 `BV1aK4y1a7sd-1`
+
+Cookie：下载高品质的音频和查看私密收藏夹需要登录，登录后将cookie保存到`cookie.txt`文件中，程序会自动读取cookie文件中的内容
+
+### MP3转码
+
+B站直接下载的MP3文件编码格式不被Apple Music支持，需要额外转码
+
+```shell
+python transcode.py
 ```
-Python 3.9
-requests==2.28.1
-```
+
+转码完成后，会在`./download`目录下生成`output`文件夹，里面存放转码后的音频文件
 
 ## 声明
 
 请尊重原视频的作者的版权，禁止用于任何商业用途！
 
-本项目参考了 https://github.com/Henryhaohao/Bilibili_video_download 和 https://github.com/SocialSisterYi/bilibili-API-collect 中部分内容，感谢两位作者。
-
-本项目作者联系方式: wfzhangzeyu@163.com
+本项目参考了 https://github.com/SocialSisterYi/bilibili-API-collect 中部分内容，感谢作者及其他贡献者。
 
